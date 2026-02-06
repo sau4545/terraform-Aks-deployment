@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-app1-app2-app3
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: eapp1.cloudsaga.in,eapp2.cloudsaga.in,eapp3.cloudsaga.in
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: eapp1.cloudsaga.in
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: myapp1-nginx-clusterip-service
+            port:
+              number: 80
+
+  - host: eapp2.cloudsaga.in
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: myapp2-nginx-clusterip-service
+            port:
+              number: 80
+
+  - host: eapp3.cloudsaga.in
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: usermgmt-webapp-clusterip-service
+            port:
+              number: 80

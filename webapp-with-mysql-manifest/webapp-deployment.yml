@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  labels:
+    app: webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: webapp
+
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      initContainers:
+      - name: wait-for-mysql
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nslookup mysql-service; do echo waiting for mysql; sleep 2; done;']
+
+      containers:
+      - name: webapp
+        image: stacksimplify/kube-usermgmt-webapp:1.0.0-MySQLDB
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MYSQL_HOST
+          value: "mysql-service"
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_USER
+          value: "root"
+        - name: MYSQL_PASSWORD
+          value: "password@123"

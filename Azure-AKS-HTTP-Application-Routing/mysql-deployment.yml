@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usermgmt-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usermgmt-mysql
+  template:
+    metadata:
+      labels:
+        app: usermgmt-mysql
+    spec:
+      imagePullSecrets:
+        - name: acr-secret
+      containers:
+        - name: mysql
+          image: cloudsaga/usermgmt-mysql:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+            - name: MYSQL_DATABASE
+              value: usermgmtdb
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+            - name: mysql-init
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        - name: mysql-init
+          configMap:
+            name: mysql-init-db

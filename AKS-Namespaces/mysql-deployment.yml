@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usermgmt-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usermgmt-mysql
+  template:
+    metadata:
+      labels:
+        app: usermgmt-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: cloudsaga/usermgmt-mysql:1.0.0
+          ports:
+            - containerPort: 3306

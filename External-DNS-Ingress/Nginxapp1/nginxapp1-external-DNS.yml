@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginxapp1-ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    external-dns.alpha.kubernetes.io/hostname: eapp1.cloudsaga.in
+    external-dns.alpha.kubernetes.io/ttl: "60"
+    external-dns.alpha.kubernetes.io/alias: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: eapp1.cloudsaga.in
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app1-nginx-service
+            port:
+              number: 80
